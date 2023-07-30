@@ -1,0 +1,31 @@
+-- qeury1
+select station.name, station.routes ,
+from nyc_subway_stations AS station ,
+JOIN nyc_neighborhoods AS neighbor  ,
+ON ST_Contains(neighbor.geom,station.geom),
+where neighbor.name = 'Little Italy';
+-- qery2
+select DISTINCT neighbor.name, neighbor.boroname,
+from nyc_subway_stations AS station,
+JOIN nyc_neighborhoods AS neighbor,
+ON ST_Contains(neighbor.geom, station.geom),
+where strpos(station.routes,'6') > 0;
+-- qery3
+select Sum(popn_total),
+from nyc_neighborhoods AS neighbor,
+JOIN nyc_census_blocks AS block,
+ON ST_Intersects(neighbor.geom, block.geom),
+where neighbor.name = 'Battery Park';
+-- qeury4
+select neighbor.name,Sum(block.popn_total)/((ST_Area(neighbor.geom)/1000000.0)) AS density,
+from nyc_census_blocks AS block,
+JOIN nyc_neighborhoods AS neighbor,
+ON ST_Intersects(block.geom, neighbor.geom),
+where neighbor.name = 'Upper West Side' OR neighbor.name = 'Upper East Side',
+GROUP BY neighbor.name, neighbor.geom;
+
+
+
+
+-- parastoo afrasyabi
+-- 9703014

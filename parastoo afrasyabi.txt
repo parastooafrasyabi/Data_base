@@ -1,0 +1,60 @@
+CREATE TABLE student(
+sname varchar(50),
+student_number int not null,
+sclass varchar(50),
+major varchar(50),
+PRIMARY KEY (student_number));
+CREATE TABLE course(
+course_name varchar(50),
+course_number int not null,
+credit_hours int,
+department varchar(50),
+PRIMARY KEY (course_number));
+CREATE TABLE prerequisite(
+course_numbers int not null,
+prerequisite_number int not null,
+PRIMARY KEY (course_numbers,prerequisite_number));
+create table sections(
+section_identifier varchar(50) not null,
+course_numberss int not null,
+semester int,
+years int,
+instructor varchar(50),
+PRIMARY KEY (section_identifier,course_numberss));
+create table grade_report(
+student_numbers int not null,
+section_identifiers varchar(50) not null,
+grade int,
+PRIMARY KEY (student_numbers,section_identifiers));
+
+ALTER TABLE prerequisite
+ADD CONSTRAINT FK_course_numbers FOREIGN KEY (course_numbers) REFERENCES course(course_number)
+ON DELETE SET default ON UPDATE CASCADE;
+ALTER TABLE sections
+ADD CONSTRAINT FK_course_numberss FOREIGN KEY (course_numberss) REFERENCES course(course_number)
+ON DELETE SET default ON UPDATE CASCADE;
+ALTER TABLE grade_report 
+ADD CONSTRAINT FK_student_numbers FOREIGN KEY (student_numbers) REFERENCES student(student_number)
+ON DELETE SET default ON UPDATE CASCADE;
+ALTER TABLE grade_report 
+ADD CONSTRAINT FK_section_identifiers FOREIGN KEY (section_identifiers) REFERENCES sections(section_identifier)
+ON DELETE SET default ON UPDATE CASCADE;
+
+
+select sname
+from student
+where major='cs';
+
+select course_name
+from course,sections
+where instructor='professor king' and (years=2007 or years=2008) and course_number=course_numberss;
+
+select course_numberss ,semester , years ,student_number
+from sections , student , grade_report
+where instructor='professor king' and student_number=student_numbers and section_identifier=section_identifiers;
+
+select sname,course_name,course_number,credit_hours,semester,years,grade
+from student,course,sections,grade_report
+where sclass=4 and major='cs'and student_number=student_numbers and section_identifier=section_identifiers and course_number=course_numberss;
+
+
